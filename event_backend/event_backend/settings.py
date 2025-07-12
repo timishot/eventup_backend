@@ -132,19 +132,21 @@ WSGI_APPLICATION = 'event_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': os.environ.get("SQL_ENGINE"),
-        'NAME': os.environ.get("SQL_DATABASE"),
-        'USER': os.environ.get("SQL_USER"),
-        'PASSWORD': os.environ.get("SQL_PASSWORD"),
-        'HOST': os.environ.get("SQL_HOST", "localhost"),
-        'PORT': os.environ.get("SQL_PORT", "5432"),
+if os.getenv("DATABASE_URL"):
+    DATABASES = {
+        "default": dj_database_url.parse(os.environ.get("DATABASE_URL"))
     }
-}
-
-database_url = os.environ.get("DATABASE_URL")
-DATABASES["default"] = dj_database_url.parse(database_url)
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': os.environ.get("SQL_ENGINE", "django.db.backends.postgresql"),
+            'NAME': os.environ.get("SQL_DATABASE", "event_db"),
+            'USER': os.environ.get("SQL_USER", "postgresuser"),
+            'PASSWORD': os.environ.get("SQL_PASSWORD", "postgres"),
+            'HOST': os.environ.get("SQL_HOST", "localhost"),
+            'PORT': os.environ.get("SQL_PORT", "5432"),
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
