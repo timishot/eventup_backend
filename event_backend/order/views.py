@@ -1,5 +1,5 @@
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -9,7 +9,7 @@ from event.models import Event
 from useraccount.models import User  # or get_user_model() if using custom user
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def create_order(request):
     try:
         data = request.data
@@ -38,9 +38,9 @@ def create_order(request):
         return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def get_user_orders(request):
-    user = request.user
+    user = request.query_params.get('userId')
     limit = int(request.query_params.get('limit', 3))
     page = int(request.query_params.get('page', 1))
 
