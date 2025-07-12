@@ -1,26 +1,31 @@
 import os
 from datetime import timedelta
 
+import dj_database_url
 from pathlib import Path
 
 
 
-from django.conf.global_settings import AUTH_USER_MODEL
+from django.conf.global_settings import AUTH_USER_MODEL, ALLOWED_HOSTS
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', "w7^#h3@9v$1jb%5x4!+m-qp@2z&df*g(8e=06")
+SECRET_KEY = os.environ.get('SECRET_KEY')
+# SECRET_KEY = os.environ.get('SECRET_KEY', "w7^#h3@9v$1jb%5x4!+m-qp@2z&df*g(8e=06")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get("DEBUG", default=True))
+DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
+# DEBUG = bool(os.environ.get("DEBUG", default=True))
 
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost").split(" ")
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost").split(" ")
+# ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost").split(" ")
 AUTH_USER_MODEL = 'useraccount.User'
 
 SITE_ID = 1
@@ -138,6 +143,8 @@ DATABASES = {
     }
 }
 
+database_url = os.environ.get("DATABASE_URL")
+DATABASES["default"] = dj_database_url.parse(database_url)
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
