@@ -19,5 +19,4 @@ sqlparse==0.5.3
 typing_extensions==4.12.2
 urllib3==2.3.0
 apt-clone==0.2.1
-apturl==0.5.2
 dj-database-url==3.0.1
