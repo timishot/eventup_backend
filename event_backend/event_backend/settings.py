@@ -142,7 +142,7 @@ ASGI_APPLICATION = "event_backend.asgi.application"
 
 if os.getenv("DATABASE_URLS"):
     DATABASES = {
-        "default": dj_database_url.parse(os.environ.get("DATABASE_URL"))
+        "default": dj_database_url.parse(os.environ.get("DATABASE_URLS"))
     }
 else:
     DATABASES = {
