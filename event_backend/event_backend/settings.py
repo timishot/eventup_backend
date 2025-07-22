@@ -6,27 +6,26 @@ from pathlib import Path
 
 
 
+
 from django.conf.global_settings import AUTH_USER_MODEL, ALLOWED_HOSTS
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY')
-# SECRET_KEY = os.environ.get('SECRET_KEY', "w7^#h3@9v$1jb%5x4!+m-qp@2z&df*g(8e=06")
+# SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY', "w7^#h3@9v$1jb%5x4!+m-qp@2z&df*g(8e=06")
 
-# SECURITY WARNING: don't run with debug turned on in production!
+
 DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 # DEBUG = bool(os.environ.get("DEBUG", default=True))
 
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost").split(" ")
 # ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost").split(" ")
 AUTH_USER_MODEL = 'useraccount.User'
+
 
 SITE_ID = 1
 
@@ -38,7 +37,7 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
     "UPDATE_LAST_LOGIN": True,
-    "SIGNING_KEY": "acomplexkey",
+    "SIGNING_KEY": os.environ.get("SECRET_KEY", "timishot"),
     "ALGORITHM": "HS256",
 }
 
@@ -61,7 +60,7 @@ REST_FRAMEWORK = {
 
 
 
-CORS_ALLOWED_ORIGINS = [ 'http://127.0.0.1:8000', 'http://localhost:3000', "https://eventup-backend.onrender.com", "https://eventup-frontend.vercel.app" ]
+CORS_ALLOWED_ORIGINS = [ 'http://127.0.0.1:8000', 'http://localhost:8000',  'http://localhost:3000', "https://eventup-backend.onrender.com", "https://eventup-frontend.vercel.app" ]
 CORS_ALLOW_CREDENTIALS = True
 
 REST_AUTH = {
@@ -86,6 +85,8 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
 
+    'channels',
+
     'dj_rest_auth',
     'dj_rest_auth.registration',
 
@@ -95,6 +96,12 @@ INSTALLED_APPS = [
     'event',
     'category',
     'order',
+    'poll',
+    'qns',
+    'relationship',
+
+
+
 ]
 
 MIDDLEWARE = [
@@ -107,6 +114,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'event_backend.urls'
@@ -127,12 +135,12 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'event_backend.wsgi.application'
-
+ASGI_APPLICATION = "event_backend.asgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-if os.getenv("DATABASE_URL"):
+if os.getenv("DATABASE_URLS"):
     DATABASES = {
         "default": dj_database_url.parse(os.environ.get("DATABASE_URL"))
     }
@@ -182,11 +190,23 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
-MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [(os.environ.get("REDIS_HOST", "redis"), 6379)],
+        },
+    },
+}
+
+STATIC_URL = 'static/'
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / 'media'

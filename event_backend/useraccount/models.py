@@ -2,6 +2,7 @@ import uuid
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser, PermissionsMixin, UserManager
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 
@@ -48,6 +49,9 @@ class User(AbstractUser, PermissionsMixin):
 
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(blank=True, null=True)
+    interests = ArrayField(models.CharField(max_length=50), blank=True, default=list, help_text='List of user interests')
+    profession = models.CharField(max_length=100, blank=True, null=True, help_text='User profession')
+    background = models.TextField(blank=True, null=True, help_text='User background information')
 
     objects = CustomUserManager()
 

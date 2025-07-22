@@ -7,13 +7,17 @@ from django.db.models import Q
 
 from .models import Event
 from .serializers import EventSerializer
+import logging
+
+logger = logging.getLogger(__name__)
 
 @api_view(['GET', 'POST'])
-@permission_classes([IsAuthenticated])  # or [AllowAny] if public
+@permission_classes([IsAuthenticatedOrReadOnly])  # or [AllowAny] if public
 def event_list_create(request):
     if request.method == 'GET':
         query = request.GET.get('query', '')
         category = request.GET.get('category', '')
+        user_id = request.GET.get('userId', '') or request.GET.get('UserId', '')
         limit = int(request.GET.get('limit', 6))
         skip = int(request.GET.get('skip', 0))
 
@@ -25,11 +29,15 @@ def event_list_create(request):
         if category:
             filters &= Q(category__name__iexact=category)
 
+        if user_id:
+            filters &= Q(organizer__id=user_id)
+
 
         events = Event.objects.filter(filters).order_by('-created_at')[skip:skip + limit]
         total = Event.objects.filter(filters).count()
 
         serializer = EventSerializer(events, many=True)
+        logger.debug(f"Events fetched: {len(serializer.data)} for user_id={user_id}, query={query}, category={category}")
         return Response({
             "data": serializer.data,
             "meta": {
@@ -133,3 +141,25 @@ def events_by_user(request):
             "totalPages": (total + limit - 1) // limit,
         }
     }, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_profile_user_event(request):
+    user = request.GET.get('userId')
+    page = int(request.GET.get('page', 1))
+    limit = int(request.GET.get('limit', 6))
+    skip = (page - 1) * limit
+
+    events = Event.objects.filter(organizer=user).order_by('-created_at')[skip:skip + limit]
+    total = Event.objects.filter(organizer=user).count()
+
+    serializer = EventSerializer(events, many=True)
+    return Response({
+        "data": serializer.data,
+        "meta": {
+            "total": total,
+            "totalPages": (total + limit - 1) // limit,
+        }
+    }, status=status.HTTP_200_OK)
+
+

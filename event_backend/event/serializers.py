@@ -13,6 +13,9 @@ class EventSerializer(serializers.ModelSerializer):
         write_only=True,
         source='category'
     )
+    id = serializers.UUIDField(read_only=True)  # Assuming Event has a UUID field
+
+
     class Meta:
         model = Event
         fields = '__all__'
