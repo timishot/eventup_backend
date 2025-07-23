@@ -16,7 +16,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # SECRET_KEY = os.environ.get('SECRET_KEY')
-SECRET_KEY = os.environ.get('SECRET_KEY', "w7^#h3@9v$1jb%5x4!+m-qp@2z&df*g(8e=06")
+SECRET_KEY = os.environ.get('SECRET_KEY', "timishot")
 
 
 DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
