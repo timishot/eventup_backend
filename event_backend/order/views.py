@@ -32,6 +32,7 @@ def create_order(request):
         )
 
         serializer = OrderSerializer(order)
+        print(serializer.data)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
