@@ -15,7 +15,7 @@ def create_order(request):
         data = request.data
 
         # Ensure required fields exist
-        stripe_id = data.get('stripe_id')
+        stripe_id = data.get('stripeId')
         total_amount = data.get('total_amount')
         event_id = data.get('event_id')
         buyer_id = data.get('buyer_id')
