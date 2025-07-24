@@ -32,6 +32,7 @@ def create_order(request):
         )
 
         serializer = OrderSerializer(order)
+
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     except Exception as e:
@@ -52,6 +53,7 @@ def get_user_orders(request):
     paginated_orders = orders[start:end]
 
     serializer = OrderSerializer(paginated_orders, many=True)
+    print(serializer.data)
     return Response({
         'data': serializer.data,
         'totalPages': (total_count + limit - 1) // limit
