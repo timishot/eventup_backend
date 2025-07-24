@@ -17,8 +17,8 @@ def create_order(request):
         # Ensure required fields exist
         stripe_id = data.get('stripe_id')
         total_amount = data.get('total_amount')
-        event_id = data.get('eventId')
-        buyer_id = data.get('buyerId')
+        event_id = data.get('event_id')
+        buyer_id = data.get('buyer_id')
 
         if not all([stripe_id, event_id, buyer_id]):
             return Response({"detail": "Missing required fields."}, status=status.HTTP_400_BAD_REQUEST)
