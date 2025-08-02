@@ -60,7 +60,7 @@ REST_FRAMEWORK = {
 
 
 
-CORS_ALLOWED_ORIGINS = [ 'http://127.0.0.1:8000', 'http://localhost:8000',  'http://localhost:3000',  "https://eventup-backend.onrender.com", "https://eventup-frontend.vercel.app" ]
+CORS_ALLOWED_ORIGINS = [ 'http://127.0.0.1:8000', 'http://localhost:8000',  'http://localhost:3000',  "https://eventup-backend.onrender.com", "https://eventup-frontend.vercel.app", "https://eventup-frontend-omega.vercel.app" ]
 CORS_ALLOW_CREDENTIALS = True
 
 REST_AUTH = {
@@ -197,15 +197,23 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [os.environ.get("REDIS_HOST", "redis")],
+            "hosts": [(os.environ.get("REDIS_HOST", "redis"),6379)],
         },
     },
 }
+
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [os.environ.get("REDIS_HOST", "redis")],
+#         },
+#     },
+# }
 
 STATIC_URL = 'static/'
 MEDIA_URL = 'media/'
